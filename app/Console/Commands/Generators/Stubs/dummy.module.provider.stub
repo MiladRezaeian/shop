@@ -1,0 +1,13 @@
+<?php
+
+namespace Module\dummy;
+
+use Module\BaseModuleProvider;
+
+class dummyModuleProvider extends BaseModuleProvider
+{
+    public function register()
+    {
+        parent::register();
+    }
+}
