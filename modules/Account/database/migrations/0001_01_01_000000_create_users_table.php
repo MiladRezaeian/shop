@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Modules\Account\database\seeders\UserSeeder;
 
 return new class extends Migration
 {
@@ -35,6 +36,11 @@ return new class extends Migration
             $table->longText('payload');
             $table->integer('last_activity')->index();
         });
+
+        if(!app()->isProduction()) {
+            $seed = resolve(UserSeeder::class);
+            $seed->run();
+        }
     }
 
     /**
