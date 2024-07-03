@@ -3,10 +3,8 @@
 namespace Modules\Account\app\Http\Controllers\Api\Web\Guest\Auth;
 
 use App\Http\Controllers\BaseController;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Modules\Account\app\Http\Requests\Auth\LoginRequest;
-use Modules\Account\app\Services\UserService;
+
 
 class LoginController extends BaseController
 {
@@ -26,9 +24,8 @@ class LoginController extends BaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(LoginRequest $request)
     {
-
         $credentials = request(['email', 'password']);
 
         if (! $token = auth()->attempt($credentials)) {
