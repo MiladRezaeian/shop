@@ -1,11 +1,12 @@
 <?php
 
-namespace Modules\Account\app\Http\Requests\Auth;
+namespace Modules\Account\app\Http\Requests\Api\Web\Panel\V1;
 
 use App\Http\Requests\BaseRequest;
-use Modules\Account\app\Rules\NationalId;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
-class RegisterRequest extends BaseRequest
+class RoleRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +24,8 @@ class RegisterRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:255'],
-            'name' => ['required', 'string', 'max:255'],
-            'national_id' => ['string', new NationalId()],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string', 'min:8'],
+            'name' => ['required'],
+            'translated_name' => ['required'],
         ];
     }
 
