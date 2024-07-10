@@ -2,98 +2,50 @@
 
 namespace Modules\Account\app\Repositories;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Facades\Hash;
-use Modules\Account\app\Contracts\Repositories\RoleRepositoryInterface;
-use Modules\Account\app\Http\Resources\UserCollection;
-use Modules\Account\app\Http\Resources\UserResource;
+use Modules\Account\app\Contracts\Repositories\PermissionRepositoryInterface;
+use Modules\Account\app\Http\Resources\PermissionResource;
 use Modules\Account\app\Models\Permission;
-use Modules\Account\app\Models\Role;
-use Modules\Account\app\Models\User;
 
-class PermissionRepository implements RoleRepositoryInterface
+class PermissionRepository implements PermissionRepositoryInterface
 {
 
-    public function getAllWithRoles(Request $request)
+    public function getAllWithRoles()
     {
-        $query = $this->applyFilters($request);
+        $permissions = Permission::paginate();
+        $permissions->load('roles');
 
-        return new UserCollection($query->get());
+        return $permissions;
     }
 
-    private function applyFilters($request)
+    public function getDataWithRoles(Permission $permission)
     {
-        $query = User::query();
-        $search = $request->input('search');
+        $permission->load(['roles']);
 
-        $this->applySearch($query, $search);
-        $this->applyIncludes($query);
-        $this->applyPagination($query, $request);
-
-        return $query;
+        return $permission;
     }
 
-    private function applySearch($query, $search)
+    public function create(array $data): Permission
     {
-        if($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        return $query;
-    }
-
-    private function applyIncludes($query)
-    {
-        return $query->with('roles');
-    }
-
-    private function applyPagination($query, $request)
-    {
-        return $query->paginate($request->input('perPage', 10));
-    }
-
-    public function getUserDataWithRolesAndPermissions(User $user)
-    {
-        $user->load(['roles', 'permissions']);
-
-        return new UserResource($user);
-    }
-
-    public function create(array $data): User
-    {
-        return User::create([
-            'username' => $data['username'],
+        return Permission::create([
             'name' => $data['name'],
-            'national_id' => $data['national_id'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'translated_name' => $data['translated_name']
         ]);
     }
 
-    public function update(array $data, User $user): User
+    public function update(array $data, Permission $permission): Permission
     {
-        $user->username = $data['username'];
-        $user->name = $data['name'];
-        $user->national_id = $data['national_id'];
-        $user->email = $data['email'];
+        $permission->name = $data['name'];
+        $permission->translated_name = $data['translated_name'];
 
-        if (isset($data['password'])) {
-            $user->password = Hash::make($data['password']);
-        }
+        $permission->save();
 
-        $user->save();
-
-        return $user;
+        return $permission;
     }
 
-    public function destroy(User $user)
+    public function destroy(Permission $permission)
     {
-        return $user->delete();
+        return $permission->delete();
     }
 
 }

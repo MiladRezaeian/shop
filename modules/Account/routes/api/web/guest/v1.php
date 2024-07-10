@@ -18,10 +18,3 @@ Route::group([
     Route::post('register', [RegisterController::class, 'register'])->name('register');
 
 });
-
-Route::get('/test', function () {
-//    auth()->user()->givePermissionsTo('delete');
-//    auth()->user()->giveRolesTo('admin');
-
-    dd(auth()->user()->can('add'));
-});

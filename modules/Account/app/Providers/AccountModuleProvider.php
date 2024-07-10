@@ -12,6 +12,7 @@ use Modules\Account\app\Contracts\Services\UserServiceInterface;
 use Modules\Account\app\Contracts\Services\PermissionServiceInterface;
 use Modules\Account\app\Contracts\Services\RegisterServiceInterface;
 use Modules\Account\app\Contracts\Services\RoleServiceInterface;
+use Modules\Account\app\Http\Resources\UserResource;
 use Modules\Account\app\Models\Permission;
 use Modules\Account\app\Models\User;
 use Modules\Account\app\Providers\Traits\DatabaseSeeders;
@@ -38,6 +39,7 @@ class AccountModuleProvider extends BaseModuleProvider
         parent::register();
 
         $this->registerServiceBindings();
+        $this->registerRepositoryBindings();
     }
 
     public function boot()
@@ -55,7 +57,10 @@ class AccountModuleProvider extends BaseModuleProvider
         App::bind(RoleServiceInterface::class, RoleService::class);
         App::bind(PermissionServiceInterface::class, PermissionService::class);
 //        App::bind(RegisterServiceInterface::class, RegisterSer::class);
+    }
 
+    private function registerRepositoryBindings()
+    {
         App::bind(UserRepositoryInterface::class, UserRepository::class);
         App::bind(RoleRepositoryInterface::class, RoleRepository::class);
         App::bind(PermissionRepositoryInterface::class, PermissionRepository::class);

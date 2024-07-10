@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Account\app\Contracts\Services\UserServiceInterface;
 use Modules\Account\app\Http\Requests\Auth\RegisterRequest;
+use Modules\Account\app\Http\Resources\UserCollection;
 use Modules\Account\app\Models\User;
 
 class UserController extends BaseController
@@ -19,9 +20,9 @@ class UserController extends BaseController
         $this->userService = $userService;
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        $users = $this->userService->index($request);
+        $users = $this->userService->index();
 
         return $this->successWithData($users);
     }
@@ -33,9 +34,9 @@ class UserController extends BaseController
         return $this->successWithData($users, Response::HTTP_CREATED);
     }
 
-    public function show(Request $request, User $user)
+    public function show(User $user)
     {
-        $userData = $this->userService->getUserData($user);
+        $userData = $this->userService->show($user);
 
         return $this->successWithData($userData);
     }
@@ -50,6 +51,13 @@ class UserController extends BaseController
     public function destroy(User $user)
     {
         $users = $this->userService->destroy($user);
+
+        return $this->successWithData($users);
+    }
+
+    public function search(Request $request)
+    {
+        $users = $this->userService->search($request);
 
         return $this->successWithData($users);
     }

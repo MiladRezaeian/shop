@@ -3,7 +3,7 @@
 namespace Modules\Account\app\Http\Requests\Auth;
 
 use App\Http\Requests\BaseRequest;
-use Modules\Account\app\Rules\NationalId;
+use Modules\Account\app\Rules\NationalIdRule;
 
 class RegisterRequest extends BaseRequest
 {
@@ -23,10 +23,10 @@ class RegisterRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'username' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'unique:users', 'string', 'max:255'],
             'name' => ['required', 'string', 'max:255'],
-            'national_id' => ['string', new NationalId()],
-            'email' => ['required', 'string', 'email', 'max:255'],
+            'national_id' => ['string', 'unique:users', new NationalIdRule()],
+            'email' => ['required', 'unique:users', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8'],
         ];
     }

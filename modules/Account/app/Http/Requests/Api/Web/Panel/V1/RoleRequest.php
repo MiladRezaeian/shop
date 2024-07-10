@@ -24,8 +24,8 @@ class RoleRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'translated_name' => ['required'],
+            'name' => ['required', 'unique:roles'],
+            'translated_name' => ['required', 'unique:roles'],
         ];
     }
 

@@ -16,53 +16,25 @@ use Modules\Account\app\Models\User;
 class UserRepository implements UserRepositoryInterface
 {
 
-    public function getAllWithRoles(Request $request)
-    {
-        $query = $this->applyFilters($request);
+    protected $user;
 
-        return new UserCollection($query->get());
+    public function __construct(User $user) {
+        $this->user = $user;
     }
 
-    private function applyFilters($request)
+    public function getAllWithRoles()
     {
-        $query = User::query();
-        $search = $request->input('search');
+        $users = User::paginate();
+        $users->load('roles');
 
-        $this->applySearch($query, $search);
-        $this->applyIncludes($query);
-        $this->applyPagination($query, $request);
-
-        return $query;
+        return $users;
     }
 
-    private function applySearch($query, $search)
-    {
-        if($search) {
-            $query->where(function($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%");
-            });
-        }
-
-        return $query;
-    }
-
-    private function applyIncludes($query)
-    {
-        return $query->with('roles');
-    }
-
-    private function applyPagination($query, $request)
-    {
-        // TODO pagination
-        return $query->paginate($request->input('perPage', 10));
-    }
-
-    public function getUserDataWithRolesAndPermissions(User $user)
+    public function getDataWithRolesAndPermissions(User $user)
     {
         $user->load(['roles', 'permissions']);
 
-        return new UserResource($user);
+        return $user;
     }
 
     public function create(array $data): User
@@ -95,6 +67,40 @@ class UserRepository implements UserRepositoryInterface
     public function destroy(User $user)
     {
         return $user->delete();
+    }
+
+    public function search($params)
+    {
+        $query = $this->user->newQuery();
+
+        if (array_key_exists('name', $params)) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+
+        if (array_key_exists('email', $params)) {
+            $query->where('email', 'like', '%' . $params['email'] . '%');
+        }
+
+        if (array_key_exists('national_id', $params)) {
+            $query->where('national_id', 'like', '%' . $params['national_id'] . '%');
+        }
+
+        if (array_key_exists('name', $params) &&
+            array_key_exists('email', $params) &&
+            array_key_exists('national_id', $params)) {
+
+            $query->where(function ($q) use ($params) {
+                $q->where('name', 'like', '%' . $params['name'] . '%')
+                    ->where('email', 'like', '%' . $params['email'] . '%')
+                    ->where('national_id', 'like', '%' . $params['national_id'] . '%');
+            });
+
+        }
+
+        $users = $query->get();
+
+        return $users;
+
     }
 
 }

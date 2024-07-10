@@ -5,6 +5,7 @@ namespace Modules\Account\app\Http\Controllers\Api\Web\Panel\V1;
 use App\Http\Controllers\BaseController;
 use Modules\Account\app\Contracts\Services\PermissionServiceInterface;
 use Modules\Account\app\Http\Requests\Api\Web\Panel\V1\PermissionRequest;
+use Modules\Account\app\Models\Permission;
 
 class PermissionController extends BaseController
 {
@@ -26,9 +27,37 @@ class PermissionController extends BaseController
 
     public function store(PermissionRequest $request)
     {
-        $roles = $this->permissionService->store($request);
+        $permissions = $this->permissionService->store($request);
 
-        return $this->successWithData($roles);
+        return $this->successWithData($permissions);
+    }
+
+    public function show(Permission $permission)
+    {
+        $permissions = $this->permissionService->show($permission);
+
+        return $this->successWithData($permissions);
+    }
+
+    public function update(PermissionRequest $request, Permission $permission)
+    {
+        $permissions = $this->permissionService->update($request, $permission);
+
+        return $this->successWithData($permissions);
+    }
+
+    public function edit(PermissionRequest $request)
+    {
+        $permissions = $this->permissionService->edit($request);
+
+        return $this->successWithData($permissions);
+    }
+
+    public function destroy(Permission $permission)
+    {
+        $permission = $this->permissionService->destroy($permission);
+
+        return $this->successWithData($permission);
     }
 
 }

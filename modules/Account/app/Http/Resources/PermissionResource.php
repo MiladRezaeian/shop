@@ -18,6 +18,7 @@ class PermissionResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'translated_name' => $this->translated_name,
+            'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ];

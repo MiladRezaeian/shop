@@ -24,8 +24,8 @@ class PermissionRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'name' => ['required'],
-            'translated_name' => ['required'],
+            'name' => ['required', 'unique:permissions'],
+            'translated_name' => ['required', 'unique:permissions'],
         ];
     }
 

@@ -5,6 +5,7 @@ use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\UserController;
 use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\PermissionController;
 use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\RoleController;
 use Modules\Account\app\Http\Middleware\LoginRequiredMiddleware;
+use Modules\Account\app\Models\User;
 
 Route::prefix('api/web/panel/v1/')
     ->middleware(LoginRequiredMiddleware::class, 'api')
@@ -18,11 +19,14 @@ Route::prefix('api/web/panel/v1/')
             ->as('users.')
             ->group(function (): void {
 
+                Route::post('/search', [UserController::class, 'search'])->name('users.search');
+
                 Route::get('/', [UserController::class, 'index'])->name('users.index');
                 Route::post('/', [UserController::class, 'store'])->name('users.store');
                 Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
                 Route::post('/{user}', [UserController::class, 'update'])->name('users.update');
                 Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+
 
             });
 
@@ -41,9 +45,9 @@ Route::prefix('api/web/panel/v1/')
             });
 
         //permission
-        Route::prefix('permission')
-            ->name('permission.')
-            ->as('permission.')
+        Route::prefix('permissions')
+            ->name('permissions.')
+            ->as('permissions.')
             ->group(function (): void {
 
                 Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');
