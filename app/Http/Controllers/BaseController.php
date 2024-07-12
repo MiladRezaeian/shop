@@ -7,12 +7,12 @@ use Illuminate\Http\Response;
 
 class BaseController extends Controller
 {
-    public function successWithData($data)
+    public function successWithData($data, $statusCode = Response::HTTP_OK)
     {
         return response()->json([
             'status' => true,
             'data' => $data
-        ]);
+        ], $statusCode);
     }
 
     public function errorWithData($data, $errorCode = Response::HTTP_BAD_REQUEST)

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Account\Tests\Feature;
+namespace Modules\Account\tests\Feature;
 
 // use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;

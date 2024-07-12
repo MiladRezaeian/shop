@@ -16,8 +16,8 @@ class UserSeeder extends Seeder
     {
 //        User::factory()->count(5)->create();
 //        UserFactory::class->count(5)->create();
-        $factory = \Modules\Account\database\factories\UserFactory::new();
+        $factory = UserFactory::new();
 
-        $factory->count(5)->create();
+        $factory->count(10)->create();
     }
 }
