@@ -20,9 +20,9 @@ class PermissionService implements PermissionServiceInterface
         $this->permissionRepository = $permissionRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->permissionRepository->getAllWithRoles();
+        return $this->permissionRepository->getAllWithRolesAndSearchCriteria($request->all());
     }
 
     public function store(PermissionRequest $request)

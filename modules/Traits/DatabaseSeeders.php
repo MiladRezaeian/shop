@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Account\app\Providers\Traits;
+namespace Modules\Traits;
 
 trait DatabaseSeeders
 {
     protected function defineSeeders(): array
     {
-        return [];
+        return $this->seedersList;
     }
 }

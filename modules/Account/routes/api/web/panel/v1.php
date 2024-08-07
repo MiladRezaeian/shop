@@ -5,7 +5,6 @@ use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\UserController;
 use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\PermissionController;
 use Modules\Account\app\Http\Controllers\Api\Web\Panel\V1\RoleController;
 use Modules\Account\app\Http\Middleware\LoginRequiredMiddleware;
-use Modules\Account\app\Models\User;
 
 Route::prefix('api/web/panel/v1/')
     ->middleware(LoginRequiredMiddleware::class, 'api')
@@ -19,14 +18,15 @@ Route::prefix('api/web/panel/v1/')
             ->as('users.')
             ->group(function (): void {
 
-                Route::post('/search', [UserController::class, 'search'])->name('users.search');
+                Route::post('/search', [UserController::class, 'search'])->name('search');
 
-                Route::get('/', [UserController::class, 'index'])->name('users.index');
-                Route::post('/', [UserController::class, 'store'])->name('users.store');
-                Route::get('/{user}', [UserController::class, 'show'])->name('users.show');
-                Route::post('/{user}', [UserController::class, 'update'])->name('users.update');
-                Route::delete('/{user}', [UserController::class, 'destroy'])->name('users.destroy');
+                Route::get('/', [UserController::class, 'index'])->name('index');
+                Route::post('/', [UserController::class, 'store'])->name('store');
+                Route::get('/{user}', [UserController::class, 'show'])->whereNumber('user')->name('show');
+                Route::post('/{user}', [UserController::class, 'update'])->whereNumber('user')->name('update');
+                Route::delete('/{user}', [UserController::class, 'destroy'])->whereNumber('user')->name('destroy');
 
+                Route::post('/{user}/upload-image', [UserController::class, 'uploadImage'])->whereNumber('user')->name('image.upload');
 
             });
 
@@ -36,11 +36,11 @@ Route::prefix('api/web/panel/v1/')
             ->as('roles.')
             ->group(function (): void {
 
-                Route::get('/', [RoleController::class, 'index'])->name('roles.index');
-                Route::post('/', [RoleController::class, 'store'])->name('roles.store');
-                Route::get('/{role}', [RoleController::class, 'show'])->name('roles.show');
-                Route::post('/{role}', [RoleController::class, 'update'])->name('roles.update');
-                Route::delete('/{role}', [RoleController::class, 'destroy'])->name('roles.destroy');
+                Route::get('/', [RoleController::class, 'index'])->name('index');
+                Route::post('/', [RoleController::class, 'store'])->name('store');
+                Route::get('/{role}', [RoleController::class, 'show'])->whereNumber('role')->name('show');
+                Route::post('/{role}', [RoleController::class, 'update'])->whereNumber('role')->name('update');
+                Route::delete('/{role}', [RoleController::class, 'destroy'])->whereNumber('role')->name('destroy');
 
             });
 
@@ -50,11 +50,11 @@ Route::prefix('api/web/panel/v1/')
             ->as('permissions.')
             ->group(function (): void {
 
-                Route::get('/', [PermissionController::class, 'index'])->name('permissions.index');
-                Route::post('/', [PermissionController::class, 'store'])->name('permissions.store');
-                Route::get('/{permission}', [PermissionController::class, 'show'])->name('permissions.show');
-                Route::post('/{permission}', [PermissionController::class, 'update'])->name('permissions.update');
-                Route::delete('/{permission}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
+                Route::get('/', [PermissionController::class, 'index'])->name('index');
+                Route::post('/', [PermissionController::class, 'store'])->name('store');
+                Route::get('/{permission}', [PermissionController::class, 'show'])->whereNumber('permission')->name('show');
+                Route::post('/{permission}', [PermissionController::class, 'update'])->whereNumber('permission')->name('update');
+                Route::delete('/{permission}', [PermissionController::class, 'destroy'])->whereNumber('permission')->name('destroy');
 
             });
 

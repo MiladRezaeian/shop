@@ -21,9 +21,9 @@ class RoleService implements RoleServiceInterface
         $this->roleRepository = $roleRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->roleRepository->getAllWithPermissions();
+        return $this->roleRepository->getAllWithPermissionsAndSearchCriteria($request->all());
     }
 
     public function store(RoleRequest $request)

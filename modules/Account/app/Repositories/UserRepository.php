@@ -16,15 +16,17 @@ use Modules\Account\app\Models\User;
 class UserRepository implements UserRepositoryInterface
 {
 
-    protected $user;
+    protected User $user;
 
-    public function __construct(User $user) {
+    public function __construct(User $user)
+    {
         $this->user = $user;
     }
 
-    public function getAllWithRoles()
+    public function getAllWithRolesAndSearchCriteria($params)
     {
-        $users = User::paginate();
+        $users = $this->applySearchFilters($params);
+
         $users->load('roles');
 
         return $users;
@@ -71,36 +73,33 @@ class UserRepository implements UserRepositoryInterface
 
     public function search($params)
     {
-        $query = $this->user->newQuery();
-
-        if (array_key_exists('name', $params)) {
-            $query->where('name', 'like', '%' . $params['name'] . '%');
-        }
-
-        if (array_key_exists('email', $params)) {
-            $query->where('email', 'like', '%' . $params['email'] . '%');
-        }
-
-        if (array_key_exists('national_id', $params)) {
-            $query->where('national_id', 'like', '%' . $params['national_id'] . '%');
-        }
-
-        if (array_key_exists('name', $params) &&
-            array_key_exists('email', $params) &&
-            array_key_exists('national_id', $params)) {
-
-            $query->where(function ($q) use ($params) {
-                $q->where('name', 'like', '%' . $params['name'] . '%')
-                    ->where('email', 'like', '%' . $params['email'] . '%')
-                    ->where('national_id', 'like', '%' . $params['national_id'] . '%');
-            });
-
-        }
-
-        $users = $query->get();
+        $users = $this->applySearchFilters($params);
 
         return $users;
 
+    }
+
+    private function applySearchFilters($params)
+    {
+        $query = $this->user->newQuery();
+
+        $name = $params['name'] ?? null;
+        $email = $params['email'] ?? null;
+        $nationalId = $params['national_id'] ?? null;
+
+        if (!empty($name)) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+
+        if (!empty($email)) {
+            $query->where('email', 'like', '%' . $params['email'] . '%');
+        }
+
+        if (!empty($nationalId)) {
+            $query->where('national_id', 'like', '%' . $params['national_id'] . '%');
+        }
+
+        return $query->paginate();
     }
 
 }

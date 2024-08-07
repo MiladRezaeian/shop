@@ -3,6 +3,7 @@
 namespace Modules\Account\app\Http\Controllers\Api\Web\Panel\V1;
 
 use App\Http\Controllers\BaseController;
+use Illuminate\Http\Request;
 use Modules\Account\app\Contracts\Services\PermissionServiceInterface;
 use Modules\Account\app\Http\Requests\Api\Web\Panel\V1\PermissionRequest;
 use Modules\Account\app\Models\Permission;
@@ -18,9 +19,9 @@ class PermissionController extends BaseController
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $permissions = $this->permissionService->index();
+        $permissions = $this->permissionService->index($request);
 
         return $this->successWithData($permissions);
     }

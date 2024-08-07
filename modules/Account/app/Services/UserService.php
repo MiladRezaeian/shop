@@ -11,21 +11,25 @@ use Modules\Account\app\Http\Resources\UserCollection;
 use Modules\Account\app\Http\Resources\UserResource;
 use Modules\Account\app\Models\User;
 use Modules\Account\app\Repositories\UserRepository;
+use Modules\File\app\Contracts\Services\FileServiceInterface;
 
 class UserService implements UserServiceInterface
 {
 
     private UserRepositoryInterface $userRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    private FileServiceInterface $fileService;
+
+    public function __construct(UserRepositoryInterface $userRepository, FileServiceInterface $fileService)
     {
         $this->userRepository = $userRepository;
+        $this->fileService = $fileService;
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        return $this->userRepository->getAllWithRoles();
+        return $this->userRepository->getAllWithRolesAndSearchCriteria($request->all());
     }
 
     public function store(RegisterRequest $request)
@@ -55,6 +59,14 @@ class UserService implements UserServiceInterface
     public function search(Request $request)
     {
         return $this->userRepository->search($request->all());
+    }
+
+    public function uploadFile($user, $request)
+    {
+        $file = $request->file('file');
+        $type = $request->get('type');
+
+        return $this->fileService->store($user, $file, $type);
     }
 
 }

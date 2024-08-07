@@ -20,9 +20,9 @@ class RoleController extends BaseController
     }
 
 
-    public function index()
+    public function index(Request $request)
     {
-        $roles = $this->roleService->index();
+        $roles = $this->roleService->index($request);
 
         return $this->successWithData($roles);
     }

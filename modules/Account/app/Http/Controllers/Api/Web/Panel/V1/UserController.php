@@ -7,22 +7,25 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Modules\Account\app\Contracts\Services\UserServiceInterface;
 use Modules\Account\app\Http\Requests\Auth\RegisterRequest;
-use Modules\Account\app\Http\Resources\UserCollection;
 use Modules\Account\app\Models\User;
+use Modules\File\app\Contracts\Services\FileServiceInterface;
+use Modules\File\app\Http\Requests\Api\Web\Panel\V1\FileRequest;
 
 class UserController extends BaseController
 {
 
     private UserServiceInterface $userService;
 
+
     public function __construct(UserServiceInterface $userService)
     {
         $this->userService = $userService;
+
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $users = $this->userService->index();
+        $users = $this->userService->index($request);
 
         return $this->successWithData($users);
     }
@@ -60,6 +63,13 @@ class UserController extends BaseController
         $users = $this->userService->search($request);
 
         return $this->successWithData($users);
+    }
+
+    public function uploadImage(User $user, FileRequest $request)
+    {
+        $users = $this->userService->uploadFile($user, $request);
+
+        return $this->successWithData($user);
     }
 
 }
