@@ -20,6 +20,13 @@
             <directory>modules/Account/tests/Feature</directory>
         </testsuite>
 
+        <testsuite name="Unit">
+            <directory>modules/File/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="Feature">
+            <directory>modules/File/tests/Feature</directory>
+        </testsuite>
+
     </testsuites>
     <source>
         <include>

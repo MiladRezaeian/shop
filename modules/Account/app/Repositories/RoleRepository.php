@@ -18,9 +18,17 @@ use Modules\Account\app\Models\User;
 class RoleRepository implements RoleRepositoryInterface
 {
 
-    public function getAllWithPermissions()
+    protected Role $role;
+
+    public function __construct(Role $role)
     {
-        $roles = Role::paginate();
+        $this->role = $role;
+    }
+
+    public function getAllWithPermissionsAndSearchCriteria($params)
+    {
+        $roles = $this->applySearchFilters($params);
+
         $roles->load('permissions');
 
         return $roles;
@@ -54,6 +62,25 @@ class RoleRepository implements RoleRepositoryInterface
     public function destroy(Role $role)
     {
         return $role->delete();
+    }
+
+    private function applySearchFilters($params)
+    {
+        $query = $this->role->newQuery();
+
+        $name = $params['name'] ?? null;
+        $translated_name = $params['translated_name'] ?? null;
+
+
+        if (!empty($name)) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+
+        if (!empty($translated_name)) {
+            $query->where('translated_name', 'like', '%' . $params['translated_name'] . '%');
+        }
+
+        return $query->paginate();
     }
 
 }

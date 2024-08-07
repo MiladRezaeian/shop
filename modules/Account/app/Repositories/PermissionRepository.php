@@ -10,9 +10,17 @@ use Modules\Account\app\Models\Permission;
 class PermissionRepository implements PermissionRepositoryInterface
 {
 
-    public function getAllWithRoles()
+    protected Permission $permission;
+
+    public function __construct(Permission $permission)
     {
-        $permissions = Permission::paginate();
+        $this->permission = $permission;
+    }
+
+    public function getAllWithRolesAndSearchCriteria($params)
+    {
+        $permissions = $this->applySearchFilters($params);
+
         $permissions->load('roles');
 
         return $permissions;
@@ -46,6 +54,25 @@ class PermissionRepository implements PermissionRepositoryInterface
     public function destroy(Permission $permission)
     {
         return $permission->delete();
+    }
+
+    private function applySearchFilters($params)
+    {
+        $query = $this->permission->newQuery();
+
+        $name = $params['name'] ?? null;
+        $translated_name = $params['translated_name'] ?? null;
+
+
+        if (!empty($name)) {
+            $query->where('name', 'like', '%' . $params['name'] . '%');
+        }
+
+        if (!empty($translated_name)) {
+            $query->where('translated_name', 'like', '%' . $params['translated_name'] . '%');
+        }
+
+        return $query->paginate();
     }
 
 }

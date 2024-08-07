@@ -15,7 +15,6 @@ use Modules\Account\app\Contracts\Services\RoleServiceInterface;
 use Modules\Account\app\Http\Resources\UserResource;
 use Modules\Account\app\Models\Permission;
 use Modules\Account\app\Models\User;
-use Modules\Account\app\Providers\Traits\DatabaseSeeders;
 use Modules\Account\app\Repositories\PermissionRepository;
 use Modules\Account\app\Repositories\RoleRepository;
 use Modules\Account\app\Repositories\UserRepository;
@@ -29,10 +28,21 @@ use Modules\Account\database\seeders\RoleSeeder;
 use Modules\Account\database\seeders\RoleUserSeeder;
 use Modules\Account\database\seeders\UserSeeder;
 use Modules\BaseModuleProvider;
+use Modules\Traits\DatabaseSeeders;
 
 class AccountModuleProvider extends BaseModuleProvider
 {
+
     use DatabaseSeeders;
+
+    protected $seedersList = [
+        UserSeeder::class,
+        RoleSeeder::class,
+        PermissionSeeder::class,
+        PermissionUserSeeder::class,
+        RoleUserSeeder::class,
+        PermissionRoleSeeder::class,
+    ];
 
     public function register()
     {
@@ -56,7 +66,6 @@ class AccountModuleProvider extends BaseModuleProvider
         App::bind(UserServiceInterface::class, UserService::class);
         App::bind(RoleServiceInterface::class, RoleService::class);
         App::bind(PermissionServiceInterface::class, PermissionService::class);
-//        App::bind(RegisterServiceInterface::class, RegisterSer::class);
     }
 
     private function registerRepositoryBindings()
@@ -64,18 +73,6 @@ class AccountModuleProvider extends BaseModuleProvider
         App::bind(UserRepositoryInterface::class, UserRepository::class);
         App::bind(RoleRepositoryInterface::class, RoleRepository::class);
         App::bind(PermissionRepositoryInterface::class, PermissionRepository::class);
-    }
-
-    protected function defineSeeders(): array
-    {
-        return [
-            UserSeeder::class,
-            RoleSeeder::class,
-            PermissionSeeder::class,
-            PermissionUserSeeder::class,
-            RoleUserSeeder::class,
-            PermissionRoleSeeder::class,
-        ];
     }
 
     private function defineModelBindings()
@@ -90,6 +87,13 @@ class AccountModuleProvider extends BaseModuleProvider
                 return $user->hasPermission($permission);
             });
         });
+    }
+
+    protected function defineRoute(string $moduleBasePath): void
+    {
+        $this->loadRoutesFrom($moduleBasePath . '/routes/api/web/customer/v1.php');
+        $this->loadRoutesFrom($moduleBasePath . '/routes/api/web/guest/v1.php');
+        $this->loadRoutesFrom($moduleBasePath . '/routes/api/web/panel/v1.php');
     }
 
 }
